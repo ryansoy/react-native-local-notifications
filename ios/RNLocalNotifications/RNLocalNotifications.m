@@ -35,12 +35,43 @@ RCT_EXPORT_METHOD(setAndroidIcons:(NSString *)largeIconName largeIconType:(NSStr
     //Do nothing
 };
 
+RCT_EXPORT_METHOD(createNotificationWithDeepLink: (NSInteger)id timestamp:(NSString *)timestamp title:(NSString *)title body:(NSString *)body deepLink:(NSString *)deepLink)
+{
+    [self _createNotificationWithDeepLink:id timestamp:timestamp title:title body:body deepLink:deepLink];
+};
+
+
+
+ -(void)_createNotificationWithDeepLink: (NSInteger)id timestamp:(NSString *)timestamp title:(NSString *)title body:(NSString *)body deepLink:(NSString *)deepLink  {
+    NSDate *fireDate = [NSDate dateWithTimeIntervalSince1970:id];
+
+     if ([[NSDate date]compare: fireDate] == NSOrderedAscending) { //only schedule items in the future!
+           UILocalNotification *notification = [[UILocalNotification alloc] init];
+           notification.fireDate = fireDate;
+           notification.timeZone = [NSTimeZone defaultTimeZone];
+           notification.alertBody = title;
+           notification.alertAction = @"Open";
+
+           NSMutableDictionary *md = [[NSMutableDictionary alloc] init];
+           [md setValue:[NSNumber numberWithInteger:id] forKey:@"id"];
+
+           [md setValue:@"ts_local_notification" forKey:@"ts_local_notification"];
+           [md setValue:deepLink forKey:@"uri"];
+           notification.userInfo = md;
+           dispatch_async(dispatch_get_main_queue(), ^{
+               [[UIApplication sharedApplication] scheduleLocalNotification:notification];
+           });
+       }
+ }
+
+
 - (void)createAlarm:(NSInteger)id text:(NSString *)text datetime:(NSString *)datetime sound:(NSString *)sound update:(Boolean)update hiddendata:(NSString *)hiddendata {
     if(update){
         [self deleteAlarm:id];
     }
     NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
     [dateFormat setDateFormat:@"yyyy-MM-dd HH:mm"];
+
     NSDate *fireDate = [dateFormat dateFromString:datetime];
     if ([[NSDate date]compare: fireDate] == NSOrderedAscending) { //only schedule items in the future!
         UILocalNotification *notification = [[UILocalNotification alloc] init];

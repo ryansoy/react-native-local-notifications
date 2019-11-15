@@ -14,6 +14,12 @@ RCT_EXPORT_METHOD(createNotification:(NSInteger)id text:(NSString *)text datetim
     [self createAlarm:id text:text datetime:datetime sound:sound update:FALSE hiddendata:(NSString *)hiddendata];
 };
 
+RCT_EXPORT_METHOD(createNotification:(long)id timestampMsString:(NSString *)timestampMsString title:(NSString *)title body:(NSString *)body deepLink:(NSString *)deepLink)
+{
+    long timestamp = timestampMsString.longLongValue;
+    // [self createAlarm:id text:text datetime:datetime sound:sound update:FALSE hiddendata:(NSString *)hiddendata];
+};
+
 RCT_EXPORT_METHOD(deleteNotification:(NSInteger)id)
 {
     [self deleteAlarm:id];

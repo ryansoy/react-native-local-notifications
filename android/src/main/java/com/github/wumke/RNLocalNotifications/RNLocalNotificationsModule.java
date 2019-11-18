@@ -52,7 +52,7 @@ public class RNLocalNotificationsModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void createNotificationWithDeepLink(
             Integer id,
-            String timestampMsString,
+            String timestampString,
             String title,
             String body,
             String deepLink
@@ -65,11 +65,14 @@ public class RNLocalNotificationsModule extends ReactContextBaseJavaModule {
         intent.putExtra("body", body);
         intent.putExtra("deepLink", deepLink);
 
-        Long timestampMs = Helper.parseTimestampString(timestampMsString);
+        Long timestamp = Helper.parseTimestampString(timestampString);
 
-        if (timestampMs == null) {
+        if (timestamp == null) {
             return;
         }
+
+        long timestampMs = timestamp * 1000;
+
 
         intent.putExtra("timestampMs", timestampMs);
 
